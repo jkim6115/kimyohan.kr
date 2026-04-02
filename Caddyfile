@@ -1,0 +1,21 @@
+:80, :443 {
+    abort
+}
+
+kimyohan.kr {
+    redir https://www.kimyohan.kr{uri} 301
+}
+
+www.kimyohan.kr {
+
+    # 이력서
+    redir /resume /resume/ 301
+    handle_path /resume/* {
+        root * /srv/resume
+        file_server
+    }
+
+    handle / {
+        redir https://www.kimyohan.kr/resume 302
+    }
+}

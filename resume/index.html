@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이력서</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 배경 장식 구체 -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+  <div class="bg-orb orb-4"></div>
+
+  <div class="resume-wrapper">
+
+    <!-- 헤더 / 프로필 -->
+    <header id="section-header" class="glass-card header-card"></header>
+
+    <div class="content-grid">
+
+      <!-- ── 왼쪽 열 ── -->
+      <aside class="left-col">
+
+        <section class="glass-card">
+          <h2 class="section-title">기술 스택</h2>
+          <div id="section-skills"></div>
+        </section>
+
+        <section class="glass-card">
+          <h2 class="section-title">학력</h2>
+          <div id="section-education"></div>
+        </section>
+
+        <!-- <section class="glass-card">
+          <h2 class="section-title">자격증</h2>
+          <div id="section-certs"></div>
+        </section> -->
+
+        <!-- <section class="glass-card">
+          <h2 class="section-title">어학</h2>
+          <div id="section-languages"></div>
+        </section> -->
+
+      </aside>
+
+      <!-- ── 오른쪽 열 ── -->
+      <main class="right-col">
+
+        <section class="glass-card">
+          <h2 class="section-title">경력 사항</h2>
+          <div id="section-experience" class="timeline"></div>
+        </section>
+
+        <section class="glass-card">
+          <h2 class="section-title">주요 프로젝트</h2>
+          <div id="section-projects" class="project-grid"></div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- data.js를 먼저 로드한 뒤 render.js 실행 -->
+  <script src="data.js"></script>
+  <script src="render.js"></script>
+</body>
+</html>
