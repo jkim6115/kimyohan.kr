@@ -7,15 +7,12 @@ kimyohan.kr {
 }
 
 www.kimyohan.kr {
+    root * /srv/www
+    file_server
 
-    # 이력서
-    redir /resume /resume/ 301
-    handle_path /resume/* {
-        root * /srv/resume
+    # SPA 스타일 fallback (404 처리)
+    handle_errors {
+        rewrite * /404.html
         file_server
-    }
-
-    handle / {
-        redir https://www.kimyohan.kr/resume 302
     }
 }

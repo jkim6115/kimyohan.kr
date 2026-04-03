@@ -1,31 +1,50 @@
 # kimyohan.kr
 
-개인 이력서 사이트. Caddy + Docker로 홈서버에서 운영합니다.
+개인 블로그. Hugo + PaperMod 테마, Caddy + Docker로 홈서버에서 운영합니다.
 
 ## 구조
 
 ```
 kimyohan.kr/
+├── blog/
+│   ├── content/posts/   # 블로그 포스트 (Markdown)
+│   ├── static/          # favicon 등 정적 파일
+│   ├── themes/PaperMod/ # PaperMod 테마 (git submodule)
+│   ├── public/          # Hugo 빌드 결과물 (.gitignore)
+│   └── hugo.yaml        # Hugo 설정
 ├── Caddyfile
-├── docker-compose.yaml
-└── resume/
-    ├── index.html
-    ├── style.css
-    ├── data.js         # 이력서 내용 (이 파일만 수정)
-    └── render.js       # DOM 렌더러
+└── docker-compose.yaml
 ```
 
 ## 실행
 
 ```bash
+# Hugo 빌드
+cd blog && hugo --minify
+
+# 서버 실행
 docker compose up -d
 ```
 
 TLS 인증서는 Caddy가 Let's Encrypt를 통해 자동 발급합니다.
 
-## 이력서 수정
+## 로컬 테스트
 
-`resume/data.js` 파일만 수정하면 됩니다. 컨테이너 재시작 없이 반영됩니다.
+```bash
+cd blog && hugo server
+```
+
+http://localhost:1313 접속.
+
+## 새 글 작성
+
+```bash
+cd blog && hugo new content posts/글-제목.md
+# blog/content/posts/글-제목.md 편집 후
+cd blog && hugo --minify
+```
+
+Docker 재시작 없이 즉시 반영됩니다.
 
 ## URL
 
@@ -33,6 +52,5 @@ TLS 인증서는 Caddy가 Let's Encrypt를 통해 자동 발급합니다.
 |---|---|
 | `http://kimyohan.kr` | `https://www.kimyohan.kr` 로 리다이렉트 |
 | `https://kimyohan.kr` | `https://www.kimyohan.kr` 로 리다이렉트 |
-| `https://www.kimyohan.kr` | `/resume` 로 리다이렉트 |
-| `https://www.kimyohan.kr/resume` | 이력서 |
+| `https://www.kimyohan.kr` | 블로그 홈 |
 | IP 직접 접근 | 연결 차단 |
