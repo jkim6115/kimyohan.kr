@@ -15,10 +15,33 @@ services:
     networks:
       - web
 
+  beszel:
+    image: henrygd/beszel
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    volumes:
+      - beszel_data:/beszel/data
+    networks:
+      - monitoring
+
+  beszel-agent:
+    image: henrygd/beszel-agent
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - PORT=45876
+      - KEY=${BESZEL_AGENT_KEY}
+
 networks:
   web:
+    driver: bridge
+  monitoring:
     driver: bridge
 
 volumes:
   caddy_data:
   caddy_config:
+  beszel_data:
