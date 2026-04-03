@@ -13,7 +13,8 @@ kimyohan.kr/
 │   ├── public/          # Hugo 빌드 결과물 (.gitignore)
 │   └── hugo.yaml        # Hugo 설정
 ├── Caddyfile
-└── docker-compose.yaml
+├── docker-compose.yaml
+└── .env                 # 환경변수 (.gitignore)
 ```
 
 ## 실행
@@ -45,6 +46,13 @@ cd blog && hugo --minify
 ```
 
 Docker 재시작 없이 즉시 반영됩니다.
+
+## 서비스
+
+| 서비스 | 설명 | 접근 |
+|---|---|---|
+| Caddy | 블로그 웹서버 | https://www.kimyohan.kr |
+| Beszel | 서버 모니터링 | http://서버IP:8090 (LAN 전용) |
 
 ## URL
 
