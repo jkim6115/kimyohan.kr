@@ -1,6 +1,7 @@
 baseURL: "https://www.kimyohan.kr/"
 title: "김요한"
-paginate: 10
+pagination:
+  pagerSize: 10
 theme: PaperMod
 
 languageCode: ko
