@@ -21,7 +21,7 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - beszel_data:/beszel/data
+      - beszel_data:/beszel_data
     networks:
       - monitoring
 
