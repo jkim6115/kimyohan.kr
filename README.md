@@ -26,8 +26,10 @@ git clone <repo> && cd kimyohan.kr
 # 테마 submodule 초기화
 git submodule update --init --recursive
 
-# UFW: Beszel Hub → Agent 통신 허용
-sudo ufw allow from 172.18.0.0/24 to any port 45876
+# UFW: Beszel Hub(컨테이너) → Agent(호스트) 45876 포트 허용
+# monitoring 네트워크 서브넷 확인 후 허용 (환경마다 다를 수 있음)
+docker network inspect kimyohankr_monitoring | grep Subnet
+sudo ufw allow from <위에서_확인한_서브넷> to any port 45876
 
 # 환경변수 설정 (Beszel KEY는 아래 Beszel 초기 설정 참고)
 cp .env.example .env

@@ -36,8 +36,10 @@ docker compose run --rm hugo   # blog/public/ 재생성
 # 테마 submodule 초기화
 git submodule update --init --recursive
 
-# UFW: Beszel Hub(컨테이너) → Agent(호스트) 통신 허용
-sudo ufw allow from 172.18.0.0/24 to any port 45876
+# UFW: Beszel Hub(컨테이너) → Agent(호스트) 45876 포트 허용
+# monitoring 네트워크 서브넷 확인 후 허용 (환경마다 다를 수 있음)
+docker network inspect kimyohankr_monitoring | grep Subnet
+sudo ufw allow from <위에서_확인한_서브넷> to any port 45876
 ```
 
 ## 아키텍처
