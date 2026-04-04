@@ -22,12 +22,47 @@ cd blog && hugo server
 
 ## 배포 워크플로우
 
-글을 추가하거나 수정한 뒤 서버에서:
+### 자동 배포 (CI/CD)
+
+`main` 브랜치에 push하면 홈서버의 self-hosted runner가 자동으로 배포합니다.
+
+트리거 경로: `blog/**`, `docker-compose.yaml`, `Caddyfile`
+
+```
+git push origin main
+    → GitHub Actions 트리거
+    → 홈서버 runner: git checkout → docker compose run --rm hugo → caddy reload
+```
+
+워크플로우 파일: `.github/workflows/deploy.yml`
+
+### 수동 배포 (서버 직접 접속 시)
 
 ```bash
 git pull
+git submodule update --init --recursive
 docker compose run --rm hugo   # blog/public/ 재생성
 # Docker 재시작 불필요 — Caddy가 볼륨 마운트된 blog/public/을 즉시 서빙
+```
+
+### Self-hosted Runner 초기 설정 (최초 1회)
+
+```bash
+# 1. GitHub 레포 → Settings → Actions → Runners → New self-hosted runner
+#    에서 토큰 발급 후 홈서버에서 실행
+
+mkdir ~/actions-runner && cd ~/actions-runner
+# GitHub에서 제공하는 다운로드/설치 명령 실행
+
+./config.sh --url https://github.com/<user>/<repo> --token <TOKEN>
+
+# systemd 서비스 등록
+sudo ./svc.sh install
+sudo ./svc.sh start
+
+# 2. runner 유저를 docker 그룹에 추가
+sudo usermod -aG docker <runner-user>
+# 변경사항 반영을 위해 재로그인 또는 재시작 필요
 ```
 
 ## 최초 배포 시 추가 작업

@@ -1,0 +1,22 @@
+name: Deploy Hugo Blog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "blog/**"
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Build Hugo
+        run: docker compose run --rm hugo
+
