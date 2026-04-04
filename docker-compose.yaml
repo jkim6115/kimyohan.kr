@@ -1,5 +1,13 @@
 services:
 
+  hugo:
+    image: hugomods/hugo:exts
+    volumes:
+      - ./blog:/src
+    working_dir: /src
+    command: hugo --minify
+    restart: no
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
