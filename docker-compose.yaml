@@ -32,6 +32,8 @@ services:
       - beszel_data:/beszel_data
     networks:
       - monitoring
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   beszel-agent:
     image: henrygd/beszel-agent
