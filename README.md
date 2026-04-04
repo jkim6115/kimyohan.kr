@@ -14,20 +14,40 @@ kimyohan.kr/
 │   └── hugo.yaml        # Hugo 설정
 ├── Caddyfile
 ├── docker-compose.yaml
-└── .env                 # 환경변수 (.gitignore)
+├── .env                 # 환경변수 (.gitignore)
+└── .env.example         # 환경변수 예시
 ```
 
-## 실행
+## 최초 배포
 
 ```bash
+git clone <repo> && cd kimyohan.kr
+
+# 테마 submodule 초기화
+git submodule update --init --recursive
+
+# UFW: Beszel Hub → Agent 통신 허용
+sudo ufw allow from 172.18.0.0/24 to any port 45876
+
+# 환경변수 설정 (Beszel KEY는 아래 Beszel 초기 설정 참고)
+cp .env.example .env
+
 # Hugo 빌드
-cd blog && hugo --minify
+docker compose run --rm hugo
 
 # 서버 실행
 docker compose up -d
 ```
 
 TLS 인증서는 Caddy가 Let's Encrypt를 통해 자동 발급합니다.
+
+## 배포 (글 추가/수정 후)
+
+```bash
+git pull
+docker compose run --rm hugo
+# Docker 재시작 불필요 — Caddy가 볼륨 마운트된 blog/public/을 즉시 서빙
+```
 
 ## 로컬 테스트
 
@@ -41,18 +61,25 @@ http://localhost:1313 접속.
 
 ```bash
 cd blog && hugo new content posts/글-제목.md
-# blog/content/posts/글-제목.md 편집 후
-cd blog && hugo --minify
+# blog/content/posts/글-제목.md 편집 후 서버에 push
 ```
-
-Docker 재시작 없이 즉시 반영됩니다.
 
 ## 서비스
 
 | 서비스 | 설명 | 접근 |
 |---|---|---|
-| Caddy | 블로그 웹서버 | https://www.kimyohan.kr |
-| Beszel | 서버 모니터링 | http://서버IP:8090 (LAN 전용) |
+| caddy | 블로그 웹서버, TLS | https://www.kimyohan.kr |
+| beszel | 서버 모니터링 Hub | http://서버IP:8090 (LAN 전용) |
+| beszel-agent | 호스트 메트릭 수집 | - |
+| hugo | Hugo 빌드 (실행 후 종료) | - |
+
+## Beszel 초기 설정
+
+1. `docker compose up -d beszel`
+2. `http://서버IP:8090` 접속 → 계정 생성
+3. Add System → Host: `host.docker.internal`, Port: `45876` → KEY 복사
+4. `.env`에 `BESZEL_AGENT_KEY=복사한키` 입력
+5. `docker compose up -d beszel-agent`
 
 ## URL
 

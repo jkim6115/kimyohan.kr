@@ -5,8 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 실행
 
 ```bash
-# 1. Hugo 빌드 (배포 전 항상 실행)
-cd blog && hugo --minify
+# 1. Hugo 빌드 (Docker 사용, hugo 로컬 설치 불필요)
+docker compose run --rm hugo
 
 # 2. 전체 서버 실행
 docker compose up -d
@@ -22,16 +22,27 @@ cd blog && hugo server
 
 ## 배포 워크플로우
 
-글을 추가하거나 수정한 뒤:
+글을 추가하거나 수정한 뒤 서버에서:
 
 ```bash
-cd blog && hugo --minify   # blog/public/ 재생성
+git pull
+docker compose run --rm hugo   # blog/public/ 재생성
 # Docker 재시작 불필요 — Caddy가 볼륨 마운트된 blog/public/을 즉시 서빙
+```
+
+## 최초 배포 시 추가 작업
+
+```bash
+# 테마 submodule 초기화
+git submodule update --init --recursive
+
+# UFW: Beszel Hub(컨테이너) → Agent(호스트) 통신 허용
+sudo ufw allow from 172.18.0.0/24 to any port 45876
 ```
 
 ## 아키텍처
 
-Hugo 정적 사이트를 Caddy로 서빙하는 구조입니다.
+Hugo 정적 사이트를 Caddy로 서빙하는 구조. Hugo 빌드는 Docker 컨테이너로 실행.
 
 - **`blog/hugo.yaml`** — Hugo 및 PaperMod 테마 설정
 - **`blog/content/posts/`** — 블로그 포스트 (Markdown)
@@ -46,6 +57,7 @@ Hugo 정적 사이트를 Caddy로 서빙하는 구조입니다.
 | 서비스 | 이미지 | 용도 |
 |---|---|---|
 | caddy | caddy:2-alpine | 블로그 웹서버, TLS |
+| hugo | hugomods/hugo:exts | Hugo 빌드 (실행 후 종료) |
 | beszel | henrygd/beszel | 서버 모니터링 허브 (LAN: 8090) |
 | beszel-agent | henrygd/beszel-agent | 호스트 메트릭 수집 |
 
@@ -53,9 +65,11 @@ Hugo 정적 사이트를 Caddy로 서빙하는 구조입니다.
 
 1. `docker compose up -d beszel`
 2. `http://서버IP:8090` 접속 → 계정 생성
-3. Hub에서 Agent 추가 → KEY 복사
-4. `.env`에 `BESZEL_AGENT_KEY=발급된키` 입력
+3. Add System → Host: `host.docker.internal`, Port: `45876` → KEY 복사
+4. `.env`에 `BESZEL_AGENT_KEY=복사한키` 입력
 5. `docker compose up -d beszel-agent`
+
+Beszel Hub는 `monitoring` 브리지 네트워크, Agent는 `network_mode: host`. Hub의 `extra_hosts: host.docker.internal:host-gateway` 설정으로 연결.
 
 ## URL 흐름
 
@@ -71,14 +85,4 @@ http://서버IP:8090        → Beszel 모니터링 (LAN 전용)
 
 ```bash
 cd blog && hugo new content posts/글-제목.md
-```
-
-## Hugo 버전
-
-PaperMod는 Hugo 0.146.0 이상 필요. 설치 경로:
-`C:\Users\yhk\AppData\Local\Programs\hugo\hugo.exe`
-
-PATH에 없으면:
-```powershell
-$env:PATH = "C:\Users\yhk\AppData\Local\Programs\hugo;$env:PATH"
 ```
