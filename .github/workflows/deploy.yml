@@ -11,12 +11,12 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout with submodules
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
+      - name: Pull latest changes
+        working-directory: /home/yhk/kimyohan.kr
+        run: |
+          git pull
+          git submodule update --init --recursive
 
       - name: Build Hugo
+        working-directory: /home/yhk/kimyohan.kr
         run: docker compose run --rm hugo
-
