@@ -1,5 +1,5 @@
 baseURL: "https://www.kimyohan.kr/"
-title: "김요한"
+title: "YHK Blog | main title"
 pagination:
   pagerSize: 10
 theme: PaperMod
@@ -18,9 +18,9 @@ minify:
 
 params:
   env: production
-  title: 김요한
-  description: 김요한의 개인 블로그
-  author: 김요한
+  title: YHK param title
+  description: YHK의 개인 블로그
+  author: YHK param author
 
   defaultTheme: auto
   disableThemeToggle: false
@@ -45,7 +45,7 @@ params:
     disableHLJS: true
 
   label:
-    text: "김요한"
+    text: "YHK label"
 
   homeInfoParams:
     Title: "안녕하세요 👋"
